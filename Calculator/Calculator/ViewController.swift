@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet var display: UILabel!
     
-    var userIsInTheMiddleOfTyping: Bool = false
+    var userIsInTheMiddleOfTyping = false
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -22,6 +22,48 @@ class ViewController: UIViewController {
         else {
            display.text = digit
            userIsInTheMiddleOfTyping = true
+        }
+    }
+    
+    @IBAction func operate(sender: UIButton) {
+        let operation = sender.currentTitle!
+        if userIsInTheMiddleOfTyping {
+            enter()
+        }
+        switch operation {
+            case "×": performOperation(multiply)
+//            case "÷":
+//            case "−":
+//            case "+":
+            default: break
+        }
+    }
+    
+    func multiply(opt1: Double, opt2: Double) -> Double{ 
+        return opt1 * opt2
+    }
+    
+    func performOperation(operation: (Double, Double) -> Double){
+        displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+        enter()
+    }
+    
+    var operandStack = Array<Double>()
+    
+    @IBAction func enter() {
+        userIsInTheMiddleOfTyping = false
+        operandStack.append(displayValue)
+        print("operandStack = \(operandStack)")
+    }
+    
+    var displayValue: Double {
+        get{
+            //Extra credit oooo
+            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+        }
+        set{
+            display.text = "\(newValue)"
+            userIsInTheMiddleOfTyping = false
         }
     }
     
