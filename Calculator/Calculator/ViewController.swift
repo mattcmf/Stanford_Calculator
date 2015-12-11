@@ -31,20 +31,26 @@ class ViewController: UIViewController {
             enter()
         }
         switch operation {
-            case "×": performOperation(multiply)
-//            case "÷":
-//            case "−":
-//            case "+":
+            case "×": performOperation {$0 * $1}
+            case "÷": performOperation {$1 / $0}
+            case "−": performOperation {$1 - $0}
+            case "+": performOperation {$0 + $1}
+            case "√": performOperation {sqrt($0)}
             default: break
         }
     }
     
-    func multiply(opt1: Double, opt2: Double) -> Double{ 
+    func multiply(opt1: Double, opt2: Double) -> Double{
         return opt1 * opt2
     }
     
     func performOperation(operation: (Double, Double) -> Double){
         displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
+        enter()
+    }
+    
+    private func performOperation(operation: Double -> Double){
+        displayValue = operation(operandStack.removeLast())
         enter()
     }
     
