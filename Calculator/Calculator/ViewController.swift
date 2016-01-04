@@ -11,12 +11,17 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet var display: UILabel!
+    @IBOutlet var history: UILabel!
     
     var userIsInTheMiddleOfTyping = false
     var userHasEnteredDecimal = false
     
     @IBAction func appendDigit(sender: UIButton) {
+        
         let digit = sender.currentTitle!
+        history.text = history.text! + sender.currentTitle!
+
+        
         if userIsInTheMiddleOfTyping {
             display.text = display.text! + digit
         }
@@ -28,6 +33,8 @@ class ViewController: UIViewController {
     
     @IBAction func operate(sender: UIButton) {
         let operation = sender.currentTitle!
+        history.text = history.text! + operation
+        
         if userIsInTheMiddleOfTyping {
             enter()
         }
@@ -49,13 +56,13 @@ class ViewController: UIViewController {
             case "sin": performOperation {sin($0)}
             case "cos": performOperation {cos($0)}
             case "π": performOperation (M_PI)
-//M_PI
-            
             default: break
         }
     }
     
 //    Add a UILabel to your UI which shows a history of every operand and operation input by the user. Place it at an appropriate location in your UI.
+    
+    
  //   5. Add a C button that clears everything (your display, the new UILabel you added above, etc.). The Calculator should be in the same state as it is at application startup after you touch this new button.
     
     @IBAction func addDecimal(sender: UIButton) {
@@ -90,6 +97,8 @@ class ViewController: UIViewController {
     }
     
     var operandStack = Array<Double>()
+    var inputsStack = Array<String>()
+
     
     @IBAction func enter() {
         userIsInTheMiddleOfTyping = false
@@ -100,6 +109,7 @@ class ViewController: UIViewController {
     
     var displayValue: Double {
         get{
+            
             //Extra credit oooo
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
