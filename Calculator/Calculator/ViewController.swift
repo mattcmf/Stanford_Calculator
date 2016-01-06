@@ -60,10 +60,12 @@ class ViewController: UIViewController {
         }
     }
     
-//    Add a UILabel to your UI which shows a history of every operand and operation input by the user. Place it at an appropriate location in your UI.
-    
-    
- //   5. Add a C button that clears everything (your display, the new UILabel you added above, etc.). The Calculator should be in the same state as it is at application startup after you touch this new button.
+
+    @IBAction func clear(sender: UIButton) {
+        display.text = ""
+        history.text = ""
+        operandStack.removeAll()
+    }
     
     @IBAction func addDecimal(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -97,8 +99,6 @@ class ViewController: UIViewController {
     }
     
     var operandStack = Array<Double>()
-    var inputsStack = Array<String>()
-
     
     @IBAction func enter() {
         userIsInTheMiddleOfTyping = false
