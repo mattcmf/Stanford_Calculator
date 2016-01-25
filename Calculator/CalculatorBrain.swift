@@ -10,11 +10,28 @@ import Foundation
 
 class CalculatorBrain
 {
-    private enum Op {
+    //Printable is not inherited but is a protocol
+    // this enum IMPLEMENTS whatever is in this printable
+    private enum Op: CustomStringConvertible
+    {
         //enum is like an array but it can only contain specific things, e.g. the binary or operand options below, to test try and enter a different option
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, (Double, Double) -> Double)
+        
+        //Computed variable
+        var description: String {
+            get{
+                switch self{
+                case .Operand(let operand):
+                    return "\(operand)"
+                case .UnaryOperation(let symbol, _):
+                    return symbol
+                case .BinaryOperation(let symbol, _):
+                    return symbol
+                }
+            }
+        }
     }
     //Array
     private var opStack = [Op]()
@@ -28,6 +45,11 @@ class CalculatorBrain
     //anytime someone says let brain = calc brain, this will be called with the corrosponding arguments, e.g. no arguments below
     init() {
         //not ideal we have the x twice
+        func learnOp(op: Op) {
+            knownOps[op.description] = op
+        }
+        learnOp(Op.BinaryOperation("×", *))
+        //replace below
         knownOps["×"] = Op.BinaryOperation("×", *)
         knownOps["+"] = Op.BinaryOperation("+", +)
         knownOps["−"] = Op.BinaryOperation("−") { $1 * $0 }
@@ -85,17 +107,19 @@ class CalculatorBrain
     //Needs to be optonal because need option to return nil (e.g. see ? at end of argument)
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
+        print("\(opStack) = \(result) with \(remainder) left over")
         return result
     }
     
     //recursion.
     
     
-    func pushOperand(operand: Double){
+    func pushOperand(operand: Double) -> Double?{
         opStack.append(Op.Operand(operand))
+        return evaluate()
     }
     
-    func performOperation(symbol: String){
+    func performOperation(symbol: String) -> Double? {
         //Uses square brackers to look up item from dictionary
         
         //operation value returns OPTIONAL op instead of a regular op
@@ -103,6 +127,7 @@ class CalculatorBrain
         if let operation = knownOps[symbol] {
             opStack.append((operation))
         }
+        return evaluate()
     }
     
     //private = private, but no key word = public by default

@@ -14,6 +14,9 @@ class ViewController: UIViewController {
     
     var userIsInTheMiddleOfTyping = false
     
+    //This reference is the "green arrow" in how the controller talks to the model
+    var brain = CalculatorBrain()
+    
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsInTheMiddleOfTyping {
@@ -26,50 +29,54 @@ class ViewController: UIViewController {
     }
     
     @IBAction func operate(sender: UIButton) {
-        let operation = sender.currentTitle!
         if userIsInTheMiddleOfTyping {
             enter()
         }
-        switch operation {
-            case "×": performOperation {$0 * $1}
-            case "÷": performOperation {$1 / $0}
-            case "−": performOperation {$1 - $0}
-            case "+": performOperation {$0 + $1}
-            //case "√": performOperation {sqrt($0)}
-            default: break
+        if let operation = sender.currentTitle{
+            if let result = brain.performOperation(operation)
+            {
+                displayValue = result
+            }
+            else
+            {
+                //TODO: make less lame and set to nill etc instead
+                displayValue = nil
+            }
         }
-        //test
     }
-    
-    func multiply(opt1: Double, opt2: Double) -> Double{
-        return opt1 * opt2
-    }
-    
-    func performOperation(operation: (Double, Double) -> Double){
-        displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-        enter()
-    }
-    
-    private func performOperation(operation: Double -> Double){
-        displayValue = operation(operandStack.removeLast())
-        enter()
-    }
-    
-    var operandStack = Array<Double>()
     
     @IBAction func enter() {
         userIsInTheMiddleOfTyping = false
-        operandStack.append(displayValue)
-        print("operandStack = \(operandStack)")
+        if let result = displayValue{
+            brain.pushOperand(result)
+            displayValue = result
+        }
+        else{
+            displayValue = nil
+            //TODO: Set to nill
+        }
     }
     
-    var displayValue: Double {
+    var displayValue: Double? {
         get{
             //Extra credit oooo
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            if let dValue = display.text{
+                return NSNumberFormatter().numberFromString(dValue)!.doubleValue
+            }
+            else{
+                return nil
+            }
+
         }
         set{
-            display.text = "\(newValue)"
+            if let dValue = newValue{
+                display.text = "\(dValue)"
+            }
+            else
+            {
+                display.text = nil
+            }
+
             userIsInTheMiddleOfTyping = false
         }
     }
