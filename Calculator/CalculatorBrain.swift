@@ -35,12 +35,14 @@ class CalculatorBrain
     }
     //Array
     private var opStack = [Op]()
-
     
     //dictionary
     private var knownOps = [String: Op]()
     //or
     //var knownOps = Dictionary<String, Op>()
+    
+    var variableValues = [String: Double]()
+
     
     //anytime someone says let brain = calc brain, this will be called with the corrosponding arguments, e.g. no arguments below
     init() {
@@ -57,6 +59,7 @@ class CalculatorBrain
         //knownOps["√"] = Op.BinaryOperation("√", sqrt)
     }
     
+
     //returns a named tuple (e.g. result is the name for the double variable)
     // Tuples can return more than 2 options
 //    func evaluate(ops: [Op]) -> (result: Double?,remainingOps: [Op]) {
@@ -86,7 +89,6 @@ class CalculatorBrain
                     return (operation(operand), operandEvaluation.remainingOps)
                 }
                 
-            
             case .BinaryOperation(_ , let operation):
                 let op1Evaluation = evaluate(remainingOps)
                 if let operand1 = op1Evaluation.result {
@@ -113,12 +115,21 @@ class CalculatorBrain
     
     //recursion.
     
-    
     func pushOperand(operand: Double) -> Double?{
         opStack.append(Op.Operand(operand))
         return evaluate()
     }
     
+    
+    func pushOperand(symbol: String, value: Double) -> Double?
+    {
+        if let variableValue = (variableValues[symbol]) {
+            opStack.append(Op.Operand(variableValue))
+        }
+        return evaluate()
+    }
+    
+
     func performOperation(symbol: String) -> Double? {
         //Uses square brackers to look up item from dictionary
         

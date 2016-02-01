@@ -45,6 +45,10 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func setVariable(){
+        brain.variableValues["x"] = 35.0
+    }
+    
     @IBAction func enter() {
         userIsInTheMiddleOfTyping = false
         if let result = displayValue{
