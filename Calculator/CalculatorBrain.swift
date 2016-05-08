@@ -109,7 +109,7 @@ class CalculatorBrain
     //Needs to be optonal because need option to return nil (e.g. see ? at end of argument)
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
-        print("\(opStack) = \(result) with \(remainder) left over")
+        print("\(opStack) = result \(result) with \(remainder) left over")
         return result
     }
     
@@ -128,6 +128,7 @@ class CalculatorBrain
         }
         return evaluate()
     }
+    
     
 
     func performOperation(symbol: String) -> Double? {

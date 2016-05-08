@@ -46,11 +46,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func setVariable(){
-        brain.variableValues["x"] = 35.0
+        brain.variableValues["M"] = displayValue
+        display.text = ""
+        print("Variable M = \(brain.variableValues["M"]!)")
     }
     
     @IBAction func enter() {
         userIsInTheMiddleOfTyping = false
+        
         if let result = displayValue{
             brain.pushOperand(result)
             displayValue = result
@@ -63,9 +66,14 @@ class ViewController: UIViewController {
     
     var displayValue: Double? {
         get{
-            //Extra credit oooo
             if let dValue = display.text{
-                return NSNumberFormatter().numberFromString(dValue)!.doubleValue
+                if Int(dValue) == nil{
+                    return brain.variableValues[dValue]!
+                }
+                else
+                {
+                    return NSNumberFormatter().numberFromString(dValue)!.doubleValue
+                }
             }
             else{
                 return nil
